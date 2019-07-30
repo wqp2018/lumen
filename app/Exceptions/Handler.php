@@ -2,12 +2,15 @@
 
 namespace App\Exceptions;
 
+use App\Http\Tool\Result;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -45,6 +48,35 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        if (env('APP_ENV') === 'local'){
+            return parent::render($request, $exception);
+        }
+
+        if ($exception instanceof NotFoundHttpException){
+            return response()->json(Result::fail('请确认API请求路径或者方式是否正确'));
+        }
+
+        if ($exception instanceof HttpException){
+            return response('', $exception->getStatusCode());
+        }
+
+        if ($exception instanceof \ErrorException) {
+            return response()->json(Result::fail($exception->getMessage()));
+        }
+
+        if ($exception instanceof TooManyRequestsHttpException){
+            return response()->json(Result::fail('操作次数过于频繁，请稍后重试'));
+        }
+
+        if ($exception instanceof ValidationException){
+            $errors = $exception->errors();
+            $response = Result::fail(json_encode($errors));
+        }else if ($exception instanceof ModelNotFoundException) {
+            $response = Result::fail('请求数据不存在');
+        }else{
+            $response = Result::fail('系统繁忙，请稍后重试');
+        }
+
+        return response()->json($response);
     }
 }

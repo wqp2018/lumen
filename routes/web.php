@@ -11,6 +11,10 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->get('captcha', 'Api\TestApiController@getCaptcha');
+
+$router->group(['middleware' => "AdminGuard"], function () use ($router) {
+   $router->get('go', function (){
+       return 123;
+   });
 });
