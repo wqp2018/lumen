@@ -70,7 +70,8 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof ValidationException){
             $errors = $exception->errors();
-            $response = Result::fail(json_encode($errors));
+            $v = array_shift($errors);
+            $response = Result::fail($v[0]);
         }else if ($exception instanceof ModelNotFoundException) {
             $response = Result::fail('请求数据不存在');
         }else{
