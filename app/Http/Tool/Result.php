@@ -9,6 +9,9 @@
 namespace App\Http\Tool;
 
 class Result{
+    const PERMISSION_DENIED = 0;        // 没有权限状态码
+    const NOT_LOGIN = -1;               // 未登录
+
 
     public static function success($msg = "", $data = [], $code = 200, $extra = ""){
         $result = [
