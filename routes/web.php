@@ -12,6 +12,7 @@
 */
 
 $router->get('captcha', 'Api\TestApiController@getCaptcha');
+$router->get('/test', 'Api\TestApiController@test');
 
 $router->group(['middleware' => "AdminGuard"], function () use ($router) {
    $router->get('go', function (){
