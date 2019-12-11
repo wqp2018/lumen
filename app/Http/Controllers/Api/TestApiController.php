@@ -39,4 +39,21 @@ class TestApiController extends BaseApiController{
         ];
         $this->exportExcel("测试.xls", $title, $data, [], ['15','15','15','15'], "test");
     }
+
+    // xml 解析
+    public function parseXml(){
+        $xml = '<?xml version="1.0" encoding="utf-8"?>
+<res>
+    <name>
+        <first>test</first>
+    </name>
+    <age>10</age>
+    <sex>man</sex>
+</res>';
+        $xml =simplexml_load_string($xml); //xml转object
+        $xml= json_encode($xml);  //objecct转json
+        $xml=json_decode($xml,true); //json转array
+
+        var_dump($xml);
+    }
 }

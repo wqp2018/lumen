@@ -59,11 +59,11 @@ trait Export{
         return $objPHPExcel;
     }
 
-    // 移除emoji 表情，否则出错
+    // 移除emoji 表情，否则出错；并加上【】预防一下特殊字符
     private function removeEmoji($str){
         $value = json_encode($str);
         $value = preg_replace("/\\\u[ed][0-9a-f]{3}\\\u[ed][0-9a-f]{3}/","*",$value);//替换成*
-        return json_decode($value);
+        return "【" . json_decode($value) . "】";
     }
 
     private function export($fileName, \PHPExcel $objPHPExcel){
